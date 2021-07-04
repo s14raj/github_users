@@ -1,23 +1,64 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+const axios = require('axios').default;
+
+function CardList(props) {
+  return (
+    <div>
+      {props.profiles.map(profile => <Card {...profile} />)}
+    </div>
+  );
+}
+
+function Form(props) {
+
+  const [userinput, changeValue] = useState('');
+
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    const res = await axios.get(`https://api.github.com/users/${userinput}`);
+    props.onSubmit(res.data);
+    const clean = () => changeValue('');
+    clean();
+  }
+
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input type="text"
+        value={userinput}
+        placeholder="GitHub UserName..." required
+        onChange={(e) => changeValue(e.target.value)}
+      />
+
+      <button>Add User</button>
+    </form>
+  );
+}
+function Card(props) {
+  const profile = props;
+  return (
+    <div className="github-profile">
+      <img src={profile.avatar_url} />
+      <div className="info">
+        <div className="name">{profile.name}</div>
+        <div className="company">{profile.company}</div>
+      </div>
+    </div>
+  );
+}
 
 function App() {
+
+  const [userprofiles, addprofile] = useState([]);
+
+  const updatedprofiles = (profiledata) => addprofile([...userprofiles, profiledata]);
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Form onSubmit={updatedprofiles} />
+      <CardList profiles={userprofiles} />
     </div>
   );
 }
