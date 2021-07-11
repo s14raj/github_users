@@ -25,8 +25,8 @@ function Form(props) {
 
   return (
     <div>
-      <div style={{textAlign:"center", fontWeight:"bolder", fontSize:30}}> Add GitHub Users:</div>
-      <br/>
+      <div style={{ textAlign: "center", fontWeight: "bolder", fontSize: 30 }}> Add GitHub Users:</div>
+      <br />
       <form onSubmit={handleSubmit}>
         <input type="text"
           value={userinput}
